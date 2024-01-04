@@ -1,4 +1,16 @@
-console.log("Hello from node.ts")
-console.log("Hello from node.ts 2")
-console.log("Hello from node.ts 3")
-console.log("Hello from node.ts 4")
+import dotenv from "dotenv"
+import app from "./app";
+import connectDB from "./utils/connectDB";
+
+dotenv.config()
+
+
+const main = async () => {
+    const PORT = process.env.PORT || 5000
+    await connectDB()
+    app.listen(PORT, () => {
+        console.log(`App running on port ${PORT}`)
+    })
+}
+
+main()
