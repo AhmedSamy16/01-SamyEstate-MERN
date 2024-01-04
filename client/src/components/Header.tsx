@@ -23,7 +23,7 @@ const Header = () => {
             </form>
             <ul className="flex gap-4">
                 {
-                    navLinksItems.map(item => <NavItem item={item} />)
+                    navLinksItems.map(item => <NavItem key={item.title} item={item} />)
                 }
             </ul>
         </div>

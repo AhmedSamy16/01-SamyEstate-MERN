@@ -6,4 +6,5 @@ declare global {
         path: string,
         isHiddenOnSamllDevices: boolean,
     }
+    
 }
