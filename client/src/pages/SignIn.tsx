@@ -1,16 +1,19 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { BASE_URL } from "../utils/constants"
+import { signInAsync } from "../redux/actions/user.action"
+import { useAppDispatch, useAppSelector } from "../redux/hooks"
+import { selectUser, resetError } from "../redux/slices/user.slice"
+import OAuth from "../components/OAuth"
 
 const SignIn = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [error, setError] = useState<string | null>("")
-  const [isLoading, setIsLoading] = useState(false)
+  const { loading, error } = useAppSelector(selectUser)
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setError(null)
+    dispatch(resetError())
     switch (e.target.id) {
       case "email":
         setEmail(e.target.value)
@@ -23,28 +26,12 @@ const SignIn = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    try {
-      setIsLoading(true)
-      const res = await fetch(`${BASE_URL}/api/v1/auth/signin`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password })
+    await dispatch(signInAsync({ email, password }))
+      .unwrap()
+      .then(() => {
+        navigate("/")
       })
-      const data = await res.json()
-      if (data.status === "failed" || data.status === "error") {
-        setError(data.message)
-        return
-      }
-      navigate("/")
-    } catch (error) {
-      setError((error as Error).message)
-      console.log((error as Error).message)
-    } finally {
-      setIsLoading(false)
-    }
+      .catch(() => console.log())
   }
 
   return (
@@ -68,9 +55,10 @@ const SignIn = () => {
           id="password" 
         />
         {error && <p className="text-red-500 mt-5">{error}</p>}
-        <button disabled={isLoading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
-          {isLoading ? "Loading..." : "Sign In"}
+        <button disabled={loading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
+          {loading ? "Loading..." : "Sign In"}
         </button>
+        <OAuth />
       </form>
       <div className="flex gap-2 mt-5">
         <p>Do not Have an account?</p>
