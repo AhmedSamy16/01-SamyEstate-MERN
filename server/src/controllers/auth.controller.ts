@@ -44,7 +44,7 @@ export const signIn = asyncErrorHandler(async (req: Request, res: Response, next
 
 
 export const google = asyncErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const { email, name } = req.body
+    const { email, name, avatar } = req.body
     if (!email) {
         return next(new CustomError("Please provide required data", 400))
     }
@@ -55,11 +55,11 @@ export const google = asyncErrorHandler(async (req: Request, res: Response, next
     } else {
         const generatedPassword: string = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8)
         const generatedUsername: string = name.replace(/\s/g, '').toLowerCase() + Math.random().toString(36).slice(-4)
-        user = await User.create({ email, username: generatedUsername, password: generatedPassword })
+        user = await User.create({ email, username: generatedUsername, password: generatedPassword, avatar })
     }
     user.password = ""
     res
-    .cookie("accessToken", token)
+    .cookie("accessToken", token, { maxAge: 1000000 })
     .status(200)
     .json({ user })
 })
