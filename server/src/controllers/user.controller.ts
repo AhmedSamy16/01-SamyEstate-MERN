@@ -21,6 +21,7 @@ export const updateUser = asyncErrorHandler(async (req: Request, res: Response, 
 
 export const deleteUser = asyncErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
     await User.findByIdAndDelete(req.params.id)
+    res.clearCookie("accessToken")
     res.sendStatus(204)
 })
 

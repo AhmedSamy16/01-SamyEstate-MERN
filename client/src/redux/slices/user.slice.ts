@@ -1,7 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-import { signInAsync, getCurrentUser, googleSignIn } from "../actions/user.action";
+import { 
+    signInAsync, 
+    getCurrentUser, 
+    googleSignIn, 
+    signOutAsync ,
+    updateUserAsync,
+    deleteUserAsync
+} from "../actions/user.action";
 
 interface UserSlice {
     user: IUser | null,
@@ -62,6 +69,43 @@ const userSlice = createSlice({
             state.loading = false
             state.error = action.payload as string
             state.user = null
+        })
+        .addCase(signOutAsync.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(signOutAsync.fulfilled, (state) => {
+            state.loading = false
+            state.error = null
+            state.user = null
+        })
+        .addCase(signOutAsync.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload as string
+            state.user = null
+        })
+        .addCase(updateUserAsync.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(updateUserAsync.fulfilled, (state, action: PayloadAction<IUser>) => {
+            state.loading = false
+            state.error = null
+            state.user = action.payload
+        })
+        .addCase(updateUserAsync.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload as string
+        })
+        .addCase(deleteUserAsync.pending, (state) => {
+            state.loading = true
+        })
+        .addCase(deleteUserAsync.fulfilled, (state) => {
+            state.loading = false
+            state.error = null
+            state.user = null
+        })
+        .addCase(deleteUserAsync.rejected, (state, action) => {
+            state.loading = false
+            state.error = action.payload as string
         })
     },
 })

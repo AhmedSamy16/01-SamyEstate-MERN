@@ -2,8 +2,16 @@ import { FaSearch } from "react-icons/fa"
 import { Link } from "react-router-dom"
 import NavItem from "./NavItem"
 import { navLinksItems } from "../utils/constants"
+import { useAppSelector } from "../redux/hooks"
+import { selectUser } from "../redux/slices/user.slice"
 
 const Header = () => {
+    const { user } = useAppSelector(selectUser)
+    let items = navLinksItems
+    if (user) {
+        items = navLinksItems.filter(n => n.path !== "/sign-in")
+    }
+    
   return (
     <header className="bg-slate-200 shadow-md">
         <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
@@ -23,7 +31,18 @@ const Header = () => {
             </form>
             <ul className="flex gap-4">
                 {
-                    navLinksItems.map(item => <NavItem key={item.title} item={item} />)
+                    items.map(item => <NavItem key={item.title} item={item} />)
+                }
+                {
+                    user && (
+                        <Link to="/profile">
+                            <img 
+                                src={user.avatar} 
+                                alt="profile" 
+                                className="rounded-full h-7 w-7 object-cover"
+                            />
+                        </Link>
+                    )
                 }
             </ul>
         </div>

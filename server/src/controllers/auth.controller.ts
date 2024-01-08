@@ -37,7 +37,7 @@ export const signIn = asyncErrorHandler(async (req: Request, res: Response, next
     const token = signToken(validUser.id)
     validUser.password = ""
     res
-    .cookie("accessToken", token, { maxAge: 1000000 })
+    .cookie("accessToken", token, { maxAge: 30 * 24 * 60 * 60 * 1000 })
     .status(200)
     .json({ user: validUser })
 })
@@ -59,7 +59,7 @@ export const google = asyncErrorHandler(async (req: Request, res: Response, next
     }
     user.password = ""
     res
-    .cookie("accessToken", token, { maxAge: 1000000 })
+    .cookie("accessToken", token, { maxAge: 30 * 24 * 60 * 60 * 1000 })
     .status(200)
     .json({ user })
 })
