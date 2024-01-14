@@ -4,7 +4,7 @@ import { selectUser } from "../redux/slices/user.slice"
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage"
 import app from "../utils/firebase"
 import { deleteUserAsync, signOutAsync, updateUserAsync } from "../redux/actions/user.action"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 const Profile = () => {
   const { user, loading } = useAppSelector(selectUser)
@@ -160,6 +160,12 @@ const Profile = () => {
         <button disabled={loading} className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">
           {loading ? "Loading..." : "Update"}
         </button>
+        <Link
+          to="/create-listing"
+          className="bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95"
+        >
+          Create Listing
+        </Link>
       </form>
       <div className="flex justify-between items-center mt-5">
         <span onClick={deleteUser} className="text-red-700 cursor-pointer">

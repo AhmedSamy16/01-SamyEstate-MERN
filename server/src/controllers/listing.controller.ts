@@ -16,7 +16,7 @@ export const getListingById = asyncErrorHandler(async (req: Request, res: Respon
 })
 
 export const createListing = asyncErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const listing = await Listing.create(req.body)
+    const listing = await Listing.create({ ...req.body, userRef: req.user?.id })
     res.status(201).json(listing)
 })
 
