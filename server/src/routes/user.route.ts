@@ -13,7 +13,7 @@ router.route("/:id")
     .patch(protectRoutes, isValidId, updateUser)
     .delete(protectRoutes, isValidId, deleteUser)
 
-router.route("/listigs/:id")
+router.route("/listings/:id")
     .get(protectRoutes, getUserListings)
 
 

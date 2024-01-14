@@ -27,5 +27,5 @@ export const updateListing = asyncErrorHandler(async (req: Request, res: Respons
 
 export const deleteListing = asyncErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
     await Listing.findByIdAndDelete(req.params.id)
-    res.status(204).json()
+    res.sendStatus(204)
 })

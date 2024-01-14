@@ -5,6 +5,8 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 import app from "../utils/firebase"
 import { deleteUserAsync, signOutAsync, updateUserAsync } from "../redux/actions/user.action"
 import { Link, useNavigate } from "react-router-dom"
+import { BASE_URL } from "../utils/constants"
+import UserProfileListing from "../components/UserProfileListing"
 
 const Profile = () => {
   const { user, loading } = useAppSelector(selectUser)
@@ -17,6 +19,7 @@ const Profile = () => {
   const [formData, setFormData] = useState<Record<string, string>>({})
   const [error, setError] = useState<string | null>(null)
   const [updateSuccess, setUpdateSuccess] = useState(false)
+  const [userLisitngs, setUserListings] = useState<IListing[]>([])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     switch (e.target.id) {
@@ -94,6 +97,39 @@ const Profile = () => {
       }
     )
   }
+
+  const deleteListing = async (listingId: string) => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/v1/listing/${listingId}`, {
+        method: "DELETE",
+        credentials: "include"
+      })
+      if (res.ok) {
+        setUserListings(prev => prev.filter(l => l._id !== listingId))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    const getUserListings = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/api/v1/user/listings/${user?._id}`, {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        })
+        const data = await res.json()
+        setUserListings(data.listings)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    if (user?._id) getUserListings()
+  }, [user?._id])
 
   useEffect(() => {
     if (file) handleFileUpload(file)
@@ -177,6 +213,12 @@ const Profile = () => {
       </div>
       {error && <p className="text-red-700 mt-5">{error}</p>}
       {updateSuccess && <p className="text-green-700 mt-5">User Updated Successfully</p>}
+      <div className="flex flex-col gap-4">
+        {userLisitngs.length > 0 && <h1 className="text-center mt-7 text-3xl font-semibold">Your Listings</h1>}
+        {userLisitngs.map(l => 
+          <UserProfileListing key={l._id} listing={l} deleteListing={deleteListing} />
+        )}
+      </div>
     </div>
   )
 }
