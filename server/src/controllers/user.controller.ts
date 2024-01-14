@@ -26,7 +26,7 @@ export const deleteUser = asyncErrorHandler(async (req: Request, res: Response, 
 })
 
 export const getUserListings = asyncErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const listings = await Listing.find({ userRef: req.params.id })
+    const listings = await Listing.find({ userRef: req.params.id }).sort("-createdAt")
     res.status(200).json({ listings })
 })
 
