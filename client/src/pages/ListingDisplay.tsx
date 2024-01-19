@@ -7,8 +7,12 @@ import { Navigation } from "swiper/modules"
 // import "swiper/swiper-bundle.css"
 import "swiper/css/bundle"
 import { FaBath, FaBed, FaChair, FaMapMarkerAlt, FaParking, FaShare } from "react-icons/fa"
+import { useAppSelector } from "../redux/hooks"
+import { selectUser } from "../redux/slices/user.slice"
+import ContactLandlord from "../components/ContactLandlord"
 
 const ListingDisplay = () => {
+    const { user } = useAppSelector(selectUser)
     SwiperCore.use([Navigation])
     const params = useParams()
     const listingId = params.listingId
@@ -16,6 +20,7 @@ const ListingDisplay = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [copied, setCopied] = useState(false)
+    const [contactLandlord, setContactLandlord] = useState(false)
 
     useEffect(() => {
         const getListing = async () => {
@@ -123,6 +128,12 @@ const ListingDisplay = () => {
                             {lisitng.furnished ? "Furnished" : "Not Furnished"}
                         </li>
                     </ul>
+                    {!contactLandlord && user && lisitng.userRef !== user._id && (
+                        <button onClick={() => setContactLandlord(true)} className="bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3">
+                            Contact Landlord
+                        </button>
+                    )}
+                    {contactLandlord && <ContactLandlord listingName={lisitng.name} landlordId={lisitng.userRef} />}
                 </div>
             </div>
         </main>

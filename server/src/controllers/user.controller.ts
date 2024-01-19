@@ -5,11 +5,10 @@ import CustomError from "../utils/CustomError"
 import Listing from "../models/listing.model"
 
 export const getUserById = asyncErrorHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const user = await User.findById(req.params.id)
+    const user = await User.findById(req.params.id).select("email username")
     if (!user) {
         return next(new CustomError("User not found", 404))
     }
-    user.password = ""
     res.status(200).json({ user })
 })
 
