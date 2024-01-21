@@ -101,7 +101,7 @@ const ListingDisplay = () => {
                         {
                             lisitng.offer && (
                                 <p className="bg-green-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
-                                    ${lisitng.regularPrice - lisitng.discountPrice}
+                                    ${lisitng.regularPrice - lisitng.discountPrice} OFF
                                 </p>
                             )
                         }
